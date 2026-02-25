@@ -55,10 +55,10 @@ export default async function HomePage({params}: Props) {
     {id: "offer-3", title: t("offerThreeTitle"), subtitle: t("offerThreeSubtitle")},
     {id: "offer-4", title: t("offerFourTitle"), subtitle: t("offerFourSubtitle")}
   ];
-  const features = [
-    {id: "feature-quality", title: t("featureQualityTitle"), description: t("featureQualityDesc"), icon: "✓"},
-    {id: "feature-shipping", title: t("featureShippingTitle"), description: t("featureShippingDesc"), icon: "🚚"},
-    {id: "feature-support", title: t("featureSupportTitle"), description: t("featureSupportDesc"), icon: "💬"},
+  const features: Array<{id: string; title: string; description: string; icon: "quality" | "shipping" | "support"}> = [
+    {id: "feature-quality", title: t("featureQualityTitle"), description: t("featureQualityDesc"), icon: "quality"},
+    {id: "feature-shipping", title: t("featureShippingTitle"), description: t("featureShippingDesc"), icon: "shipping"},
+    {id: "feature-support", title: t("featureSupportTitle"), description: t("featureSupportDesc"), icon: "support"},
   ];
   const testimonials = [
     {id: "tm-1", quote: t("testimonialOneQuote"), name: t("testimonialOneName"), role: t("testimonialOneRole")},

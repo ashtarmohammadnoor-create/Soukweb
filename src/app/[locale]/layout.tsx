@@ -49,7 +49,7 @@ export default async function LocaleLayout({children, params}: Props) {
       <Providers>
         <div dir={dir} lang={safeLocale} className="flex min-h-screen flex-col">
           <Header />
-          <main className="flex-1">
+          <main className="flex-1 text-base md:text-lg">
             <Container>{children}</Container>
           </main>
           <Footer />

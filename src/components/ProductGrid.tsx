@@ -1,5 +1,6 @@
 import {ProductCard} from "@/components/ProductCard";
 import {EmptyState} from "@/components/EmptyState";
+import {SkeletonGrid} from "@/components/SkeletonGrid";
 import {Link} from "@/i18n/navigation";
 import {localizeProduct} from "@/lib/product-i18n";
 import {jsonToStringArray} from "@/lib/utils";
@@ -25,19 +26,6 @@ type Props = {
   emptyVariant?: "full" | "compact";
 };
 
-function SkeletonCard() {
-  return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <div className="aspect-[4/3] w-full animate-pulse bg-slate-100" />
-      <div className="space-y-3 p-4">
-        <div className="h-4 w-3/4 animate-pulse rounded bg-slate-100" />
-        <div className="h-4 w-1/2 animate-pulse rounded bg-slate-100" />
-        <div className="h-10 w-full animate-pulse rounded-xl bg-slate-100" />
-      </div>
-    </div>
-  );
-}
-
 export function ProductGrid({
   products,
   locale,
@@ -57,11 +45,7 @@ export function ProductGrid({
               {emptyCtaLabel}
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
-            {Array.from({length: 8}).map((_, index) => (
-              <SkeletonCard key={index} />
-            ))}
-          </div>
+          <SkeletonGrid count={8} />
         </div>
       );
     }
@@ -69,11 +53,7 @@ export function ProductGrid({
     return (
       <div className="space-y-4">
         <EmptyState title={emptyTitle} description={emptyDescription} ctaLabel={emptyCtaLabel} ctaHref={emptyCtaHref} />
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4">
-          {Array.from({length: 8}).map((_, index) => (
-            <SkeletonCard key={index} />
-          ))}
-        </div>
+        <SkeletonGrid count={8} />
       </div>
     );
   }

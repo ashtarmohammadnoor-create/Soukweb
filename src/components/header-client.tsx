@@ -4,7 +4,7 @@ import {FormEvent, useEffect, useState} from "react";
 import {Link, useRouter} from "@/i18n/navigation";
 import {LanguageSwitcher} from "@/components/language-switcher";
 import {TopBar} from "@/components/TopBar";
-import {CategoriesRow} from "@/components/CategoriesRow";
+import {CategoriesMenu} from "@/components/CategoriesMenu";
 import {useCart} from "@/components/cart-provider";
 
 type HeaderLabels = {
@@ -155,7 +155,7 @@ export function HeaderClient({labels, isLoggedIn}: Props) {
         </div>
       </div>
 
-      <CategoriesRow
+      <CategoriesMenu
         triggerLabel={labels.allCategories}
         items={[
           {id: "electronics", label: labels.categoryElectronics, href: "/products"},

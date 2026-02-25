@@ -62,9 +62,15 @@
     "contact": "Contact",
     "privacy": "Privacy policy",
     "supportTitle": "Support",
+    "contactTitle": "Contact",
+    "emailSupport": "support@webshop.local",
+    "phoneSupport": "+0 000 000 000",
     "faq": "FAQ",
     "shipping": "Shipping",
     "returns": "Returns",
+    "socialX": "X",
+    "socialInstagram": "Instagram",
+    "socialLinkedIn": "LinkedIn",
     "copyright": "© {year} Webshop. All rights reserved."
   },
   "Home": {

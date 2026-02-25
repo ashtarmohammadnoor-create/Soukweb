@@ -8,8 +8,8 @@ export async function Footer() {
 
   return (
     <footer className="mt-10 border-t border-slate-200 bg-slate-50">
-      <Container className="py-10">
-        <div className="grid gap-8 md:grid-cols-3">
+      <Container className="py-12 md:py-16">
+        <div className="grid gap-8 md:grid-cols-4">
           <div>
             <h3 className="text-lg font-bold text-slate-900">{t("brand")}</h3>
             <p className="mt-2 text-sm text-slate-600">{t("description")}</p>
@@ -33,15 +33,23 @@ export async function Footer() {
               <Link href="/#returns" className="hover:text-slate-900">{t("returns")}</Link>
             </div>
           </div>
+
+          <div>
+            <h4 className="text-sm font-semibold text-slate-900">{t("contactTitle")}</h4>
+            <div className="mt-3 flex flex-col gap-2 text-sm text-slate-600">
+              <a href="mailto:support@webshop.local" className="hover:text-slate-900">{t("emailSupport")}</a>
+              <a href="tel:+0000000000" className="hover:text-slate-900">{t("phoneSupport")}</a>
+              <div className="mt-2 flex items-center gap-3">
+                <a href="#" aria-label={t("socialX")} className="hover:text-slate-900">X</a>
+                <a href="#" aria-label={t("socialInstagram")} className="hover:text-slate-900">Instagram</a>
+                <a href="#" aria-label={t("socialLinkedIn")} className="hover:text-slate-900">LinkedIn</a>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-4 text-xs text-slate-500">
+        <div className="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-500">
           <p>{t("copyright", {year})}</p>
-          <div className="flex items-center gap-3">
-            <a href="#" aria-label="X" className="hover:text-slate-900">X</a>
-            <a href="#" aria-label="Instagram" className="hover:text-slate-900">Instagram</a>
-            <a href="#" aria-label="LinkedIn" className="hover:text-slate-900">LinkedIn</a>
-          </div>
         </div>
       </Container>
     </footer>

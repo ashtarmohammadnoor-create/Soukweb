@@ -55,8 +55,8 @@ export function FiltersSidebarToggle({query, labels, isRTL}: Props) {
 
   return (
     <>
-      <div className="mb-5">
-        <button type="button" className="btn-secondary h-10 px-4" onClick={() => setOpen(true)}>
+      <div>
+        <button type="button" className="btn-secondary px-4" onClick={() => setOpen(true)}>
           {labels.filtersTitle}
         </button>
       </div>
@@ -70,7 +70,7 @@ export function FiltersSidebarToggle({query, labels, isRTL}: Props) {
         >
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900">{labels.filtersTitle}</h2>
-            <button type="button" className="btn-secondary h-8 px-3 text-xs" onClick={() => setOpen(false)}>
+            <button type="button" className="btn-secondary h-9 px-3 text-xs" onClick={() => setOpen(false)}>
               X
             </button>
           </div>

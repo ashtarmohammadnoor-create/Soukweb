@@ -62,9 +62,15 @@
     "contact": "تواصل",
     "privacy": "سياسة الخصوصية",
     "supportTitle": "الدعم",
+    "contactTitle": "تواصل",
+    "emailSupport": "support@webshop.local",
+    "phoneSupport": "+0 000 000 000",
     "faq": "الأسئلة الشائعة",
     "shipping": "الشحن",
     "returns": "الاسترجاع",
+    "socialX": "إكس",
+    "socialInstagram": "إنستغرام",
+    "socialLinkedIn": "لينكدإن",
     "copyright": "© {year} السوق الالكتروني. جميع الحقوق محفوظة."
   },
   "Home": {

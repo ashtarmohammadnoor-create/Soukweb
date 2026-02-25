@@ -2,6 +2,7 @@ import {Link} from "@/i18n/navigation";
 import {getTranslations} from 'next-intl/server';
 import { EmptyState } from "@/components/empty-state";
 import {ProductCard} from '@/components/ProductCard';
+import {FiltersSidebar} from '@/components/FiltersSidebar';
 import {FiltersSidebarToggle} from '@/components/FiltersSidebarToggle';
 import { getProducts, getProductsCount } from "@/lib/store";
 import { localizeProduct } from "@/lib/product-i18n";
@@ -74,28 +75,40 @@ export default async function ProductsPage({ params, searchParams }: Props) {
   };
 
   return (
-    <div className="pt-6 pb-10 md:pt-8 md:pb-12">
+    <div className="pt-4 pb-10 md:pt-6 md:pb-12">
       <h1 className="mb-7 text-3xl font-bold tracking-tight text-slate-950 md:mb-8 md:text-4xl">{t('title')}</h1>
 
-      <FiltersSidebarToggle query={query} labels={labels} isRTL={isRTL} />
+      <div className="mb-4 md:hidden">
+        <FiltersSidebarToggle query={query} labels={labels} isRTL={isRTL} />
+      </div>
 
-      {products.length === 0 ? <div className="mt-6"><EmptyState title={t('emptyTitle')} description={t('emptyDescription')} actionHref="/products" actionLabel={t('resetFilters')} /></div> : <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4">{products.map((product) => <ProductCard key={product.id} product={{...localizeProduct(product, locale), image: product.imageList[0]}} />)}</div>}
-      {totalProducts > limit ? (
-        <div className="mt-6 flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
-          {canPrev ? (
-            <Link href={buildPageHref(page - 1)} className="btn-secondary h-10 rounded-xl">
-              {t('prev')}
-            </Link>
-          ) : <span />}
-          <p className="text-sm text-slate-600">{t('pageInfo', {page, total: totalPages})}</p>
-          {canNext ? (
-            <Link href={buildPageHref(page + 1)} className="btn-secondary h-10 rounded-xl">
-              {t('next')}
-            </Link>
-          ) : <span />}
+      <div className="md:flex md:items-start md:gap-6 lg:gap-8">
+        <aside className="hidden w-72 shrink-0 md:block">
+          <div className="sticky top-24">
+            <FiltersSidebar query={query} labels={labels} />
+          </div>
+        </aside>
+
+        <div className="min-w-0 flex-1">
+          {products.length === 0 ? <div className="mt-2"><EmptyState title={t('emptyTitle')} description={t('emptyDescription')} actionHref="/products" actionLabel={t('resetFilters')} /></div> : <div className="mt-2 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 md:gap-6 lg:grid-cols-4">{products.map((product) => <ProductCard key={product.id} product={{...localizeProduct(product, locale), image: product.imageList[0]}} />)}</div>}
+          {totalProducts > limit ? (
+            <div className="mt-6 flex items-center justify-between rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+              {canPrev ? (
+                <Link href={buildPageHref(page - 1)} className="btn-secondary h-10 rounded-xl">
+                  {t('prev')}
+                </Link>
+              ) : <span />}
+              <p className="text-sm text-slate-600">{t('pageInfo', {page, total: totalPages})}</p>
+              {canNext ? (
+                <Link href={buildPageHref(page + 1)} className="btn-secondary h-10 rounded-xl">
+                  {t('next')}
+                </Link>
+              ) : <span />}
+            </div>
+          ) : null}
+          <p className="text-xs text-slate-500">{t('tip')} <Link href="/products" className="underline">/products/[slugOrId]</Link></p>
         </div>
-      ) : null}
-      <p className="text-xs text-slate-500">{t('tip')} <Link href="/products" className="underline">/products/[slugOrId]</Link></p>
+      </div>
     </div>
   );
 }
