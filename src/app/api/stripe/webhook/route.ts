@@ -2,8 +2,8 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
-import { stripe } from "@/lib/stripe";
-import { env } from "@/lib/env";
+import { getStripeClient } from "@/lib/stripe";
+import { getEnv } from "@/lib/env";
 
 export const runtime = "nodejs";
 
@@ -60,6 +60,8 @@ async function handleFailed(session: Stripe.Checkout.Session) {
 }
 
 export async function POST(request: Request) {
+  const env = getEnv();
+  const stripe = getStripeClient(env.STRIPE_SECRET_KEY);
   const rawBody = await request.text();
   const signature = (await headers()).get("stripe-signature");
 

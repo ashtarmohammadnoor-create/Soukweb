@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { checkoutSchema } from "@/lib/validations/checkout";
-import { stripe } from "@/lib/stripe";
-import { env } from "@/lib/env";
+import { getStripeClient } from "@/lib/stripe";
+import { getEnv } from "@/lib/env";
 
 export async function POST(request: Request) {
+  const env = getEnv();
+  const stripe = getStripeClient(env.STRIPE_SECRET_KEY);
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
