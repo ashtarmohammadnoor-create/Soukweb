@@ -203,6 +203,8 @@
     "addToCart": "Add to cart",
     "outOfStock": "Out of stock",
     "inStock": "In stock",
+    "fallbackName": "Unnamed product",
+    "fallbackDescription": "No description available for this product.",
     "invalidRange": "Minimum price cannot be greater than maximum price."
   },
   "Cart": {

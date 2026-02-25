@@ -23,6 +23,9 @@ export function ProductCard({product}: ProductCardProps) {
   const locale = useLocale();
   const t = useTranslations('Products');
   const inStock = product.stock > 0;
+  const safeName = product.name?.trim() || t("fallbackName");
+  const safeDescription = product.description?.trim() || t("fallbackDescription");
+  const safePrice = Number.isFinite(product.priceCents) ? product.priceCents : 0;
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:shadow-soft">
@@ -38,7 +41,7 @@ export function ProductCard({product}: ProductCardProps) {
           {product.image ? (
             <Image
               src={product.image}
-              alt={product.name}
+              alt={safeName}
               fill
               className="object-cover transition duration-500 group-hover:scale-[1.03]"
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
@@ -50,17 +53,17 @@ export function ProductCard({product}: ProductCardProps) {
       <div className="space-y-3 p-4 md:p-5">
         <div className="space-y-1.5">
           <Link href={`/products/${product.slug}`} className="line-clamp-2 text-base font-semibold leading-6 text-slate-900 transition group-hover:text-indigo-600 md:text-lg">
-            {product.name}
+            {safeName}
           </Link>
-          <p className="line-clamp-2 text-sm leading-6 text-slate-600">{product.description}</p>
+          <p className="line-clamp-2 text-sm leading-6 text-slate-600">{safeDescription}</p>
         </div>
 
         <div className="flex items-center justify-between">
-          <p className="text-lg font-bold text-slate-900">{formatCurrency(product.priceCents, product.currency, locale)}</p>
+          <p className="text-lg font-bold text-slate-900">{formatCurrency(safePrice, product.currency, locale)}</p>
         </div>
 
         <div>
-          <AddToCartButton product={{id: product.id, slug: product.slug, name: product.name, priceCents: product.priceCents, currency: product.currency, stock: product.stock, image: product.image}} />
+          <AddToCartButton product={{id: product.id, slug: product.slug, name: safeName, priceCents: safePrice, currency: product.currency, stock: product.stock, image: product.image}} />
         </div>
       </div>
     </article>

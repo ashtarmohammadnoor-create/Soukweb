@@ -203,6 +203,8 @@
     "addToCart": "أضف للسلة",
     "outOfStock": "غير متوفر",
     "inStock": "متوفر",
+    "fallbackName": "منتج بدون اسم",
+    "fallbackDescription": "لا يوجد وصف متاح لهذا المنتج.",
     "invalidRange": "لا يمكن أن يكون حد السعر الأدنى أكبر من حد السعر الأعلى."
   },
   "Cart": {
