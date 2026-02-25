@@ -49,12 +49,18 @@ export async function getProducts(options: ProductListOptions = {}) {
   const page = Math.max(1, options.page ?? 1);
   const limit = Math.max(1, options.limit ?? 100);
 
-  const products = await prisma.product.findMany({
-    where,
-    orderBy,
-    skip: (page - 1) * limit,
-    take: limit,
-  });
+  let products: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
+  try {
+    products = await prisma.product.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+  } catch (error) {
+    console.error("getProducts failed", error);
+    return [];
+  }
 
   return products.map((product) => ({
     ...product,
@@ -64,16 +70,27 @@ export async function getProducts(options: ProductListOptions = {}) {
 
 export async function getProductsCount(options: ProductListOptions = {}) {
   const where = buildProductsWhere(options);
-  return prisma.product.count({where});
+  try {
+    return await prisma.product.count({where});
+  } catch (error) {
+    console.error("getProductsCount failed", error);
+    return 0;
+  }
 }
 
 export async function getProductBySlugOrId(slugOrId: string, includeInactive = false) {
-  const product = await prisma.product.findFirst({
-    where: {
-      OR: [{ id: slugOrId }, { slug: slugOrId }],
-      ...(includeInactive ? {} : { isActive: true }),
-    },
-  });
+  let product = null;
+  try {
+    product = await prisma.product.findFirst({
+      where: {
+        OR: [{ id: slugOrId }, { slug: slugOrId }],
+        ...(includeInactive ? {} : { isActive: true }),
+      },
+    });
+  } catch (error) {
+    console.error("getProductBySlugOrId failed", error);
+    return null;
+  }
 
   if (!product) {
     return null;

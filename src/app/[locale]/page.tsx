@@ -11,14 +11,17 @@ type Props = {params: Promise<{locale: string}>};
 
 export default async function HomePage({params}: Props) {
   const {locale} = await params;
-  const [products, t] = await Promise.all([
-    prisma.product.findMany({
+  const t = await getTranslations("Home");
+  let products: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
+  try {
+    products = await prisma.product.findMany({
       where: {isActive: true},
       orderBy: [{isFeatured: "desc"}, {createdAt: "desc"}],
       take: 12
-    }),
-    getTranslations("Home")
-  ]);
+    });
+  } catch (error) {
+    console.error("HomePage products query failed", error);
+  }
 
   const localizedProducts = products.map((product) => ({
     ...localizeProduct(product, locale),
