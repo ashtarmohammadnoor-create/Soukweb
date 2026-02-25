@@ -6,6 +6,11 @@ import {FiltersSidebarToggle} from '@/components/FiltersSidebarToggle';
 import { getProducts, getProductsCount } from "@/lib/store";
 import { localizeProduct } from "@/lib/product-i18n";
 
+type SortOption = "newest" | "price_asc" | "price_desc";
+
+const isSortOption = (value: unknown): value is SortOption =>
+  value === "newest" || value === "price_asc" || value === "price_desc";
+
 type Props = {
   params: Promise<{locale: string}>;
   searchParams: Promise<{q?: string; min?: string; max?: string; available?: string; sort?: string; page?: string;}>;
@@ -19,12 +24,14 @@ export default async function ProductsPage({ params, searchParams }: Props) {
   const c = await getTranslations('Common');
   const page = Math.max(1, Number(query.page ?? "1") || 1);
   const limit = 24;
+  const sortRaw = query.sort;
+  const sort = typeof sortRaw === "string" && isSortOption(sortRaw) ? sortRaw : undefined;
   const filterOptions = {
     search: query.q,
     minPrice: query.min ? Number(query.min) : undefined,
     maxPrice: query.max ? Number(query.max) : undefined,
     availableOnly: query.available === "1",
-    sort: query.sort === "price_asc" || query.sort === "price_desc" || query.sort === "newest" ? query.sort : "newest" as const
+    sort
   };
 
   const [products, totalProducts] = await Promise.all([
