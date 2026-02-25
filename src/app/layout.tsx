@@ -1,5 +1,5 @@
 import "./globals.css";
-import {headers} from 'next/headers';
+import {cookies} from 'next/headers';
 import { Inter, Cairo } from "next/font/google";
 
 const inter = Inter({
@@ -19,7 +19,8 @@ const cairo = Cairo({
 });
 
 export default async function RootLayout({children}: Readonly<{children: React.ReactNode}>) {
-  const locale = (await headers()).get('x-locale') ?? 'en';
+  const localeCookie = (await cookies()).get("NEXT_LOCALE")?.value;
+  const locale = localeCookie === "ar" ? "ar" : "en";
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
 
   return (

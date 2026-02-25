@@ -40,13 +40,14 @@ export default async function LocaleLayout({children, params}: Props) {
     notFound();
   }
   const safeLocale: AppLocale = locale;
+  const dir = safeLocale === "ar" ? "rtl" : "ltr";
   setRequestLocale(safeLocale);
   const messages = await getMessages({locale: safeLocale});
 
   return (
     <NextIntlClientProvider locale={safeLocale} messages={messages}>
       <Providers>
-        <div className="flex min-h-screen flex-col">
+        <div dir={dir} lang={safeLocale} className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">
             <Container>{children}</Container>
