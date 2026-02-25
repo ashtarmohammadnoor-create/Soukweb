@@ -12,6 +12,20 @@ type ProductListOptions = {
   limit?: number;
 };
 
+function getDbRuntimeInfo() {
+  const raw = process.env.DATABASE_URL ?? "";
+  const kind = raw.startsWith("file:") ? "sqlite" : raw.startsWith("postgres") ? "postgresql" : "unknown";
+  return {
+    hasDatabaseUrl: Boolean(raw),
+    databaseKind: kind,
+  };
+}
+
+function getErrorMessage(error: unknown) {
+  if (error instanceof Error) return error.message;
+  return String(error);
+}
+
 type DbProduct = Awaited<ReturnType<typeof prisma.product.findMany>>[number];
 
 const FALLBACK_PRODUCTS: DbProduct[] = [
@@ -70,6 +84,90 @@ const FALLBACK_PRODUCTS: DbProduct[] = [
     stock: 9,
     createdAt: new Date("2026-01-02T00:00:00.000Z"),
     updatedAt: new Date("2026-01-02T00:00:00.000Z"),
+  },
+  {
+    id: "fallback-desk-lamp",
+    slug: "smart-desk-lamp",
+    name: "Smart Desk Lamp",
+    description: "Adjustable LED desk lamp with touch dimmer.",
+    priceCents: 5400,
+    currency: "usd",
+    images: JSON.stringify(["/uploads/sample-mug.svg"]),
+    isActive: true,
+    isFeatured: true,
+    stock: 18,
+    createdAt: new Date("2026-01-01T00:00:00.000Z"),
+    updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+  {
+    id: "fallback-water-bottle",
+    slug: "travel-water-bottle",
+    name: "Travel Water Bottle",
+    description: "Insulated stainless bottle for hot and cold drinks.",
+    priceCents: 2600,
+    currency: "usd",
+    images: JSON.stringify(["/uploads/sample-wallet.svg"]),
+    isActive: true,
+    isFeatured: true,
+    stock: 34,
+    createdAt: new Date("2025-12-31T00:00:00.000Z"),
+    updatedAt: new Date("2025-12-31T00:00:00.000Z"),
+  },
+  {
+    id: "fallback-wireless-mouse",
+    slug: "wireless-mouse",
+    name: "Wireless Mouse",
+    description: "Ergonomic wireless mouse with silent click buttons.",
+    priceCents: 3200,
+    currency: "usd",
+    images: JSON.stringify(["/uploads/sample-headphones.svg"]),
+    isActive: true,
+    isFeatured: true,
+    stock: 27,
+    createdAt: new Date("2025-12-30T00:00:00.000Z"),
+    updatedAt: new Date("2025-12-30T00:00:00.000Z"),
+  },
+  {
+    id: "fallback-notebook-organizer",
+    slug: "notebook-organizer",
+    name: "Notebook Organizer",
+    description: "Compact organizer for cables, pens, and notebooks.",
+    priceCents: 4100,
+    currency: "usd",
+    images: JSON.stringify(["/uploads/sample-backpack.svg"]),
+    isActive: true,
+    isFeatured: true,
+    stock: 15,
+    createdAt: new Date("2025-12-29T00:00:00.000Z"),
+    updatedAt: new Date("2025-12-29T00:00:00.000Z"),
+  },
+  {
+    id: "fallback-phone-stand",
+    slug: "portable-phone-stand",
+    name: "Portable Phone Stand",
+    description: "Foldable aluminum stand for phones and mini tablets.",
+    priceCents: 1900,
+    currency: "usd",
+    images: JSON.stringify(["/uploads/sample-wallet.svg"]),
+    isActive: true,
+    isFeatured: true,
+    stock: 46,
+    createdAt: new Date("2025-12-28T00:00:00.000Z"),
+    updatedAt: new Date("2025-12-28T00:00:00.000Z"),
+  },
+  {
+    id: "fallback-canvas-tote",
+    slug: "canvas-tote-bag",
+    name: "Canvas Tote Bag",
+    description: "Durable daily tote bag with reinforced shoulder straps.",
+    priceCents: 2900,
+    currency: "usd",
+    images: JSON.stringify(["/uploads/sample-backpack.svg"]),
+    isActive: true,
+    isFeatured: true,
+    stock: 31,
+    createdAt: new Date("2025-12-27T00:00:00.000Z"),
+    updatedAt: new Date("2025-12-27T00:00:00.000Z"),
   },
 ];
 
@@ -154,12 +252,34 @@ export async function getProducts(options: ProductListOptions = {}) {
       skip: (page - 1) * limit,
       take: limit,
     });
+    console.info("[products] query success", {
+      count: products.length,
+      page,
+      limit,
+      sort: options.sort ?? "newest",
+      availableOnly: Boolean(options.availableOnly),
+      search: options.search ?? null,
+      ...getDbRuntimeInfo(),
+    });
   } catch (error) {
-    console.error("getProducts failed", error);
+    console.error("[products] query failed", {
+      message: getErrorMessage(error),
+      page,
+      limit,
+      sort: options.sort ?? "newest",
+      availableOnly: Boolean(options.availableOnly),
+      search: options.search ?? null,
+      ...getDbRuntimeInfo(),
+    });
     const fallback = sortFallbackProducts(filterFallbackProducts(options), options.sort).slice(
       (page - 1) * limit,
       page * limit
     );
+    console.warn("[products] fallback products enabled", {
+      fallbackCount: fallback.length,
+      page,
+      limit,
+    });
     return mapStoreProducts(fallback);
   }
 
@@ -169,10 +289,20 @@ export async function getProducts(options: ProductListOptions = {}) {
 export async function getProductsCount(options: ProductListOptions = {}) {
   const where = buildProductsWhere(options);
   try {
-    return await prisma.product.count({where});
+    const total = await prisma.product.count({where});
+    console.info("[products] count success", {
+      total,
+      ...getDbRuntimeInfo(),
+    });
+    return total;
   } catch (error) {
-    console.error("getProductsCount failed", error);
-    return filterFallbackProducts(options).length;
+    const fallbackCount = filterFallbackProducts(options).length;
+    console.error("[products] count failed", {
+      message: getErrorMessage(error),
+      fallbackCount,
+      ...getDbRuntimeInfo(),
+    });
+    return fallbackCount;
   }
 }
 

@@ -16,6 +16,8 @@ type Props = {
   searchParams: Promise<{q?: string; min?: string; max?: string; available?: string; sort?: string; page?: string;}>;
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ProductsPage({ params, searchParams }: Props) {
   const {locale} = await params;
   const isRTL = locale === "ar";

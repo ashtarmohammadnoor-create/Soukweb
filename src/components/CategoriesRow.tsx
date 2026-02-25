@@ -12,10 +12,11 @@ type CategoryItem = {
 type Props = {
   triggerLabel: string;
   items: CategoryItem[];
+  quickLinks?: CategoryItem[];
   className?: string;
 };
 
-export function CategoriesRow({triggerLabel, items, className}: Props) {
+export function CategoriesRow({triggerLabel, items, quickLinks = [], className}: Props) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +43,7 @@ export function CategoriesRow({triggerLabel, items, className}: Props) {
   return (
     <div className={`border-b border-slate-200 bg-white/95 ${className ?? ""}`}>
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8" ref={rootRef}>
-        <div className="relative flex h-11 items-center sm:h-12">
+        <div className="relative flex h-11 items-center justify-between gap-3 sm:h-12">
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
@@ -62,8 +63,18 @@ export function CategoriesRow({triggerLabel, items, className}: Props) {
             </svg>
           </button>
 
+          {quickLinks.length > 0 ? (
+            <div className="hidden items-center gap-4 md:flex">
+              {quickLinks.map((item) => (
+                <Link key={item.id} href={item.href} className="text-sm font-medium text-slate-600 transition hover:text-slate-900">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          ) : null}
+
           {open ? (
-            <div className="absolute start-0 top-12 z-50 w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-lg">
+            <div className="absolute start-0 top-12 z-50 w-[20rem] rounded-2xl border border-slate-200 bg-white p-2 shadow-lg sm:w-[22rem]">
               {items.map((item) => (
                 <Link
                   key={item.id}

@@ -9,6 +9,9 @@ import {useCart} from "@/components/cart-provider";
 
 type HeaderLabels = {
   brand: string;
+  products: string;
+  about: string;
+  contact: string;
   searchPlaceholder: string;
   allCategories: string;
   trackOrder: string;
@@ -35,14 +38,14 @@ type Props = {
 
 function ActionItem({icon, label, href, badge}: {icon: React.ReactNode; label: string; href: string; badge?: number}) {
   return (
-    <Link href={href} className="relative flex min-w-11 flex-col items-center gap-1 rounded-xl px-1.5 py-1 text-slate-700 hover:bg-slate-100 sm:min-w-14 sm:px-2">
-      <span className="relative inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-100">{icon}</span>
+    <Link href={href} className="relative flex w-14 flex-col items-center justify-center gap-1 rounded-xl py-1 text-slate-700 transition hover:bg-slate-100">
+      <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100">{icon}</span>
       {typeof badge === "number" && badge > 0 ? (
         <span className="absolute top-0 inline-flex min-h-5 min-w-5 items-center justify-center rounded-full bg-indigo-600 px-1.5 text-[11px] font-semibold text-white">
           {badge}
         </span>
       ) : null}
-      <span className="hidden text-[11px] font-medium sm:block">{label}</span>
+      <span className="text-xs font-medium leading-none">{label}</span>
     </Link>
   );
 }
@@ -93,9 +96,9 @@ export function HeaderClient({labels, isLoggedIn}: Props) {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={labels.searchPlaceholder}
-              className="input-field h-12 rounded-2xl border-slate-300 ps-4 pe-12"
+              className="input-field h-12 rounded-2xl border-slate-300 ps-5 pe-14"
             />
-            <span className="pointer-events-none absolute inset-y-0 end-4 inline-flex items-center text-slate-400">
+            <span className="pointer-events-none absolute inset-y-0 end-5 inline-flex items-center text-slate-400">
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <circle cx="11" cy="11" r="7" />
                 <path d="m20 20-3.5-3.5" />
@@ -103,7 +106,7 @@ export function HeaderClient({labels, isLoggedIn}: Props) {
             </span>
           </form>
 
-          <div className="ms-auto flex items-start gap-0.5 sm:gap-2">
+          <div className="ms-auto flex items-center gap-1 sm:gap-2">
             <ActionItem
               href="/account/orders"
               label={labels.trackOrder}
@@ -125,7 +128,7 @@ export function HeaderClient({labels, isLoggedIn}: Props) {
               badge={totalItems}
               icon={<svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M3 4h2l2.2 10.5a1 1 0 0 0 .98.8H17a1 1 0 0 0 .97-.76L20 7H7" /></svg>}
             />
-            <div className="hidden pt-1 md:block">
+            <div className="hidden pt-0.5 md:block">
               <LanguageSwitcher />
             </div>
           </div>
@@ -138,9 +141,9 @@ export function HeaderClient({labels, isLoggedIn}: Props) {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder={labels.searchPlaceholder}
-                className="input-field h-11 rounded-2xl border-slate-300 ps-4 pe-12"
+                className="input-field h-12 rounded-2xl border-slate-300 ps-5 pe-14"
               />
-              <span className="pointer-events-none absolute inset-y-0 end-4 inline-flex items-center text-slate-400">
+              <span className="pointer-events-none absolute inset-y-0 end-5 inline-flex items-center text-slate-400">
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <circle cx="11" cy="11" r="7" />
                   <path d="m20 20-3.5-3.5" />
@@ -160,6 +163,11 @@ export function HeaderClient({labels, isLoggedIn}: Props) {
           {id: "fashion", label: labels.categoryFashion, href: "/products"},
           {id: "gaming", label: labels.categoryGaming, href: "/products"},
           {id: "office", label: labels.categoryOffice, href: "/products"}
+        ]}
+        quickLinks={[
+          {id: "products", label: labels.products, href: "/products"},
+          {id: "about", label: labels.about, href: "/#about"},
+          {id: "contact", label: labels.contact, href: "/#contact"}
         ]}
       />
     </header>

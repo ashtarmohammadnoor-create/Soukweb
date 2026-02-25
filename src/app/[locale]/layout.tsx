@@ -4,7 +4,7 @@ import {NextIntlClientProvider} from 'next-intl';
 import {getMessages, getTranslations, setRequestLocale} from 'next-intl/server';
 import {notFound} from 'next/navigation';
 import {Header} from '@/components/Header';
-import {Footer} from '@/components/footer';
+import {Footer} from '@/components/Footer';
 import {Container} from '@/components/Container';
 import {Providers} from '@/components/providers';
 import {routing, type AppLocale} from '@/i18n/routing';
@@ -40,7 +40,7 @@ export default async function LocaleLayout({children, params}: Props) {
     notFound();
   }
   const safeLocale: AppLocale = locale;
-  const dir = "rtl";
+  const dir = safeLocale === "ar" ? "rtl" : "ltr";
   setRequestLocale(safeLocale);
   const messages = await getMessages({locale: safeLocale});
 

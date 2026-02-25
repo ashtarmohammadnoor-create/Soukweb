@@ -9,6 +9,9 @@ export async function Header() {
     <HeaderClient
       labels={{
         brand: t('brand'),
+        products: t('products'),
+        about: t('about'),
+        contact: t('contact'),
         searchPlaceholder: t('searchPlaceholder'),
         allCategories: t('allCategories'),
         trackOrder: t('trackOrder'),

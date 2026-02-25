@@ -21,7 +21,7 @@ const cairo = Cairo({
 export default async function RootLayout({children}: Readonly<{children: React.ReactNode}>) {
   const localeCookie = (await cookies()).get("NEXT_LOCALE")?.value;
   const locale = localeCookie === "ar" ? "ar" : "en";
-  const dir = "rtl";
+  const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
     <html lang={locale} dir={dir}>

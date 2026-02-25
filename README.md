@@ -1,119 +1,85 @@
-﻿# Webshop MVP (Next.js + Prisma + Stripe)
+# Webshop MVP (Next.js + Prisma + Stripe)
 
-متجر إلكتروني كامل باستخدام:
+## Stack
 - Next.js 16 (App Router) + TypeScript
 - Tailwind CSS
-- Prisma + SQLite (مع قابلية التحويل إلى Postgres لاحقًا)
-- Stripe Checkout (Test Mode)
-- نظام مصادقة بسيط (Email/Password + JWT Cookie)
+- Prisma + PostgreSQL (Neon/Supabase)
+- Stripe Checkout (Test mode)
 
-## المزايا المنفذة
-- تسجيل / دخول / خروج.
-- حماية صفحات `/admin` بحيث يدخلها ADMIN فقط.
-- صفحات المتجر:
-  - `/` الصفحة الرئيسية
-  - `/products` قائمة المنتجات مع بحث + فلترة + ترتيب
-  - `/products/[slugOrId]` صفحة المنتج
-  - `/cart` السلة (localStorage)
-  - `/checkout` بدء الدفع عبر Stripe
-  - `/account/orders` طلباتي
-- Stripe:
-  - إنشاء Checkout Session آمن من السيرفر
-  - Webhook لتحديث حالة الطلب (`PAID/FAILED`)
-- لوحة الإدارة:
-  - `/admin` لوحة إحصائيات
-  - `/admin/products` CRUD كامل
-  - رفع صور المنتجات إلى `/public/uploads` (حل MVP)
-  - `/admin/orders` إدارة حالات الطلبات
-- تحسينات تجربة المستخدم:
-  - Navbar + Footer
-  - Toasts
-  - Loading state
-  - 404 + Empty states
-  - Validation عبر Zod
+## Why products disappear on Netlify
+In Netlify, local SQLite (`file:./dev.db`) is not suitable because the filesystem is ephemeral between deploys/functions.
+Use an external PostgreSQL database and fetch products at request time.
 
-## المتطلبات
-- Node.js 20+
-- npm
-- Stripe CLI (اختياري لكن مفيد لاختبار webhook محليًا)
+Applied fixes:
+- Added server-side product diagnostics logs:
+  - `src/lib/store.ts`
+  - `src/app/api/products/route.ts`
+- Forced request-time rendering for product pages:
+  - `src/app/[locale]/products/page.tsx` -> `export const dynamic = "force-dynamic"`
+  - `src/app/[locale]/page.tsx` -> `export const dynamic = "force-dynamic"`
+- Switched Prisma datasource provider to `postgresql`.
 
-## الإعداد السريع
-1. تثبيت الحزم:
+## Environment Variables
+Set these in local `.env` and Netlify:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DB_NAME?schema=public"
+AUTH_SECRET="replace-with-a-long-random-secret"
+STRIPE_SECRET_KEY="sk_test_xxx"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_xxx"
+STRIPE_WEBHOOK_SECRET="whsec_xxx"
+NEXT_PUBLIC_APP_URL="https://YOUR_SITE.netlify.app"
+```
+
+## Local setup
 ```bash
 npm install
-```
-
-2. إعداد ملف البيئة:
-```bash
-cp .env.example .env
-```
-
-3. تحديث مفاتيح Stripe داخل `.env`:
-- `STRIPE_SECRET_KEY`
-- `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`
-- `STRIPE_WEBHOOK_SECRET`
-
-4. تشغيل Prisma migration + seed:
-```bash
-npm run db:migrate
+npx prisma generate
+npm run db:push
 npm run db:seed
-```
-
-5. تشغيل المشروع:
-```bash
 npm run dev
 ```
 
-## أوامر مهمة
-- `npm run db:migrate` تشغيل migration
-- `npm run db:seed` إدخال بيانات تجريبية
-- `npm run db:studio` فتح Prisma Studio
-- `npm run lint` فحص الكود
-- `npm run build` بناء الإنتاج
+## Scripts
+- `npm run db:migrate` local dev migration
+- `npm run db:deploy` apply migrations in production
+- `npm run db:push` quick schema sync
+- `npm run db:seed` seed demo data
+- `npm run db:studio` Prisma Studio
+- `npm run build` production build
 
-## حسابات تجريبية
-- Admin:
-  - Email: `admin@webshop.local`
-  - Password: `Admin123!`
-- User:
-  - Email: `user@webshop.local`
-  - Password: `User123!`
+## Product diagnostics logs
+Check Netlify server logs for:
+- `[products] query success` -> query returned count
+- `[products] query failed` -> DB/ENV connection issue
+- `[products] count success|failed`
+- `[api/products] request|response`
 
-## تشغيل Stripe Webhook محليًا
-1. شغّل التطبيق:
-```bash
-npm run dev
-```
+Diagnostic endpoint:
+- `GET /api/products?page=1&limit=24`
 
-2. سجّل الدخول في Stripe CLI:
+## Netlify configuration
+`netlify.toml` build command:
+- `npm install && npx prisma generate && npx prisma db push && npm run build`
+
+Plugin:
+- `@netlify/plugin-nextjs`
+
+## Netlify setup steps
+1. Connect your GitHub repository to Netlify.
+2. In `Site settings -> Environment variables`, add all ENV values above.
+3. In `Deploys`, click `Trigger deploy -> Clear cache and deploy site`.
+4. After deploy, test:
+   - `/api/products`
+   - `/ar/products` and `/en/products`
+5. If products still disappear, open server logs and inspect `[products] query failed`.
+
+## Stripe webhook local test
 ```bash
 stripe login
-```
-
-3. فعّل webhook محليًا:
-```bash
 stripe listen --forward-to localhost:3000/api/stripe/webhook
 ```
 
-4. انسخ قيمة `whsec_...` وضعها في `.env` في `STRIPE_WEBHOOK_SECRET`.
-
-## بطاقات الدفع التجريبية
-- نجاح الدفع: `4242 4242 4242 4242`
-- استخدم تاريخًا مستقبليًا + أي CVC + أي ZIP.
-
-## التحويل إلى Postgres لاحقًا
-1. غيّر `provider` في `prisma/schema.prisma` إلى `postgresql`.
-2. حدّث `DATABASE_URL` لرابط Postgres.
-3. نفّذ migration جديدة.
-
-## قائمة التحقق (Acceptance)
-- [x] المستخدم يسجل/يدخل، يتصفح المنتجات، يضيف للسلة.
-- [x] checkout ينشئ Order بحالة `PENDING` ثم يحوّل إلى Stripe.
-- [x] webhook يحدّث الطلب إلى `PAID` عند نجاح الدفع.
-- [x] الطلب يظهر في `/account/orders`.
-- [x] Admin يضيف منتجًا جديدًا ويظهر في `/products`.
-- [x] Admin يغيّر حالة الطلب من لوحة الإدارة.
-
-## ملاحظات MVP
-- رفع الصور إلى `/public/uploads` مناسب للتطوير فقط وليس للإنتاج.
-- للإنتاج يفضّل استخدام S3/UploadThing + Session/Auth أقوى + Rate Limiting.
+## Demo accounts
+- Admin: `admin@webshop.local` / `Admin123!`
+- User: `user@webshop.local` / `User123!`

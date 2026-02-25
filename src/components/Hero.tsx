@@ -20,12 +20,12 @@ export function Hero({badge, title, description, ctaPrimary, ctaSecondary, produ
   const heroImages = products.slice(0, 4);
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 md:p-10">
+    <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 md:p-10">
       <div className="grid items-center gap-6 md:grid-cols-2 md:gap-8">
-        <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600">{badge}</p>
-          <h1 className="mt-3 text-2xl font-bold leading-tight text-slate-950 sm:text-3xl md:text-5xl">{title}</h1>
-          <p className="mt-4 max-w-xl text-base text-slate-600 md:text-lg">{description}</p>
+        <div className="max-w-xl">
+          <p className="inline-flex rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold tracking-wide text-indigo-700">{badge}</p>
+          <h1 className="mt-3 text-3xl font-bold leading-tight text-slate-950 sm:text-4xl md:text-5xl">{title}</h1>
+          <p className="mt-4 max-w-xl text-base leading-8 text-slate-600 md:text-lg">{description}</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link href="/products" className="btn-primary h-11 rounded-2xl px-5">{ctaPrimary}</Link>
             <Link href="/admin" className="btn-secondary h-11 rounded-2xl px-5">{ctaSecondary}</Link>
