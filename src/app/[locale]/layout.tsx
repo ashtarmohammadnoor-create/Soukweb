@@ -40,7 +40,7 @@ export default async function LocaleLayout({children, params}: Props) {
     notFound();
   }
   const safeLocale: AppLocale = locale;
-  const dir = safeLocale === "ar" ? "rtl" : "ltr";
+  const dir = "rtl";
   setRequestLocale(safeLocale);
   const messages = await getMessages({locale: safeLocale});
 
